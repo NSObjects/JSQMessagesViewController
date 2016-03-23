@@ -18,6 +18,14 @@
 
 #import "JSQMessagesLabel.h"
 
+
+@interface JSQMessagesLabel ()
+
+- (void)jsq_configureLabel;
+
+@end
+
+
 @implementation JSQMessagesLabel
 
 #pragma mark - Initialization

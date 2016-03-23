@@ -35,6 +35,8 @@ typedef void (^JSQLocationMediaItemCompletionBlock)(void);
  */
 @interface JSQLocationMediaItem : JSQMediaItem <JSQMessageMediaData, MKAnnotation, NSCoding, NSCopying>
 
+@property (copy, nonatomic) NSString *addressName;
+
 /**
  *  The location for the media item. The default value is `nil`.
  */

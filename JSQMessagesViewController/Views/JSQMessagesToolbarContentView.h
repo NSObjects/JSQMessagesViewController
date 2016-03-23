@@ -37,7 +37,7 @@ FOUNDATION_EXPORT const CGFloat kJSQMessagesToolbarContentViewHorizontalSpacingD
 /**
  *  Returns the text view in which the user composes a message.
  */
-@property (weak, nonatomic, readonly) JSQMessagesComposerTextView *textView;
+@property (nonatomic, readonly) JSQMessagesComposerTextView *textView;
 
 /**
  *  A custom button item displayed on the left of the toolbar content view.
@@ -111,6 +111,8 @@ FOUNDATION_EXPORT const CGFloat kJSQMessagesToolbarContentViewHorizontalSpacingD
  */
 @property (weak, nonatomic, readonly) UIView *rightBarButtonContainerView;
 
+@property (weak, nonatomic, readonly) UIView *centerContainerView;
+- (void)centerContainerAddSubView:(UIView *)view;
 #pragma mark - Class methods
 
 /**

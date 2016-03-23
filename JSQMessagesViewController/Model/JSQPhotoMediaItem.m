@@ -43,6 +43,12 @@
     return self;
 }
 
+- (void)dealloc
+{
+    _image = nil;
+    _cachedImageView = nil;
+}
+
 - (void)clearCachedMediaViews
 {
     [super clearCachedMediaViews];

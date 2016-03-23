@@ -20,9 +20,9 @@
 
 #import "JSQMessagesMediaPlaceholderView.h"
 #import "JSQMessagesMediaViewBubbleImageMasker.h"
-
+#import <MediaPlayer/MediaPlayer.h>
 #import "UIImage+JSQMessages.h"
-
+#import <AVFoundation/AVFoundation.h>
 
 @interface JSQVideoMediaItem ()
 
@@ -44,6 +44,12 @@
         _cachedVideoImageView = nil;
     }
     return self;
+}
+
+- (void)dealloc
+{
+    _fileURL = nil;
+    _cachedVideoImageView = nil;
 }
 
 - (void)clearCachedMediaViews
@@ -84,16 +90,47 @@
         CGSize size = [self mediaViewDisplaySize];
         UIImage *playIcon = [[UIImage jsq_defaultPlayImage] jsq_imageMaskedWithColor:[UIColor lightGrayColor]];
         
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:playIcon];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[self combinImage:[self getThumbnailImage:self.fileURL] toImage:playIcon size:size]];
         imageView.backgroundColor = [UIColor blackColor];
         imageView.frame = CGRectMake(0.0f, 0.0f, size.width, size.height);
-        imageView.contentMode = UIViewContentModeCenter;
+        imageView.contentMode = UIViewContentModeScaleToFill;
         imageView.clipsToBounds = YES;
+
         [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:self.appliesMediaViewMaskAsOutgoing];
         self.cachedVideoImageView = imageView;
     }
     
     return self.cachedVideoImageView;
+}
+
+- (UIImage *)getThumbnailImage:(NSURL *)path
+{
+    AVURLAsset *urlAsset = [[AVURLAsset alloc] initWithURL:path options:nil];
+    AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:urlAsset];
+    imageGenerator.appliesPreferredTrackTransform = YES;    
+    CMTime time = CMTimeMakeWithSeconds(1.0, 30);
+    CGImageRef cgImage = [imageGenerator copyCGImageAtTime:time actualTime:nil error:nil];
+    UIImage *image = [UIImage imageWithCGImage:cgImage];
+    
+    return image;
+}
+
+- (UIImage *)combinImage:(UIImage *)image1 toImage:(UIImage *)image2 size:(CGSize)size {
+    UIGraphicsBeginImageContext(size);
+    
+    // Draw image1
+    [image1 drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    
+    // Draw image2
+    CGFloat imageX = (size.width / 2) - (image2.size.width / 2);
+    CGFloat imageY = (size.height / 2) - (image2.size.height / 2);
+    [image2 drawInRect:CGRectMake(imageX, imageY, image2.size.width, image2.size.height)];
+    
+    UIImage *resultingImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resultingImage;
 }
 
 - (NSUInteger)mediaHash

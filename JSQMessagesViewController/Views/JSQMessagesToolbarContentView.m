@@ -25,7 +25,9 @@ const CGFloat kJSQMessagesToolbarContentViewHorizontalSpacingDefault = 8.0f;
 
 @interface JSQMessagesToolbarContentView ()
 
-@property (weak, nonatomic) IBOutlet JSQMessagesComposerTextView *textView;
+@property (weak, nonatomic) IBOutlet UIView *centerContainerView;
+
+@property (strong, nonatomic) JSQMessagesComposerTextView *textView;
 
 @property (weak, nonatomic) IBOutlet UIView *leftBarButtonContainerView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *leftBarButtonContainerViewWidthConstraint;
@@ -62,6 +64,63 @@ const CGFloat kJSQMessagesToolbarContentViewHorizontalSpacingDefault = 8.0f;
     self.rightHorizontalSpacingConstraint.constant = kJSQMessagesToolbarContentViewHorizontalSpacingDefault;
 
     self.backgroundColor = [UIColor clearColor];
+    self.centerContainerView.backgroundColor = [UIColor clearColor];
+    [self centerDefaultsView];
+}
+
+- (void)dealloc
+{
+    _textView = nil;
+    _leftBarButtonItem = nil;
+    _rightBarButtonItem = nil;
+    _leftBarButtonContainerView = nil;
+    _rightBarButtonContainerView = nil;
+}
+
+- (void)centerContainerAddSubView:(UIView *)view {
+    for (UIView *view in self.centerContainerView.subviews) {
+        [view removeFromSuperview];
+    }
+    view.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.centerContainerView addSubview:view];
+    [self.centerContainerView addConstraints:@[[NSLayoutConstraint constraintWithItem:view
+                                                                            attribute:NSLayoutAttributeTop
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:self.centerContainerView
+                                                                            attribute:NSLayoutAttributeTop
+                                                                           multiplier:1.0
+                                                                             constant:0],
+                                               
+                                               [NSLayoutConstraint constraintWithItem:view
+                                                                            attribute:NSLayoutAttributeLeft
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:self.centerContainerView
+                                                                            attribute:NSLayoutAttributeLeft
+                                                                           multiplier:1.0
+                                                                             constant:0],
+                                               
+                                               [NSLayoutConstraint constraintWithItem:view
+                                                                            attribute:NSLayoutAttributeBottom
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:self.centerContainerView
+                                                                            attribute:NSLayoutAttributeBottom
+                                                                           multiplier:1.0
+                                                                             constant:0],
+                                               
+                                               [NSLayoutConstraint constraintWithItem:view
+                                                                            attribute:NSLayoutAttributeRight
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:self.centerContainerView
+                                                                            attribute:NSLayoutAttributeRight
+                                                                           multiplier:1
+                                                                             constant:0],
+                                               
+                                               ]];
+}
+
+- (void)centerDefaultsView {
+    self.textView = [[JSQMessagesComposerTextView alloc]init];
+    [self centerContainerAddSubView:self.textView];
 }
 
 #pragma mark - Setters
