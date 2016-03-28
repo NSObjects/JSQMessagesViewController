@@ -112,7 +112,11 @@ FOUNDATION_EXPORT const CGFloat kJSQMessagesToolbarContentViewHorizontalSpacingD
 @property (weak, nonatomic, readonly) UIView *rightBarButtonContainerView;
 
 @property (weak, nonatomic, readonly) UIView *centerContainerView;
+
+- (void)centerDefaultsView;
+
 - (void)centerContainerAddSubView:(UIView *)view;
+
 #pragma mark - Class methods
 
 /**
